@@ -21,6 +21,7 @@ var msg = {
 }
 
 printer.execute("Get-Jobs", msg, function(err:any, res:any){
+
   if (err) return console.log(err);
-  console.log(res['job-attributes-tag']);
+  console.log(res);
 });

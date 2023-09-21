@@ -24,7 +24,7 @@ function random(){
 }
 
 export default function serialize(msg:any){
-	var buf = new Buffer(10240);
+	var buf = Buffer.alloc(10240)
 	var position = 0;
 	function write1(val:number){
 		checkBufferSize(1);

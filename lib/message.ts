@@ -4,7 +4,8 @@ import tag from './tags'
 
 
 function msg(host: string, operation: number, id: number) {
-	var buf = new Buffer(1024);
+	
+	var buf = Buffer.alloc(1024)
 	var position = 0;
 	function write1(val: number) {
 		buf.writeUInt8(val, position);

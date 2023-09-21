@@ -2,7 +2,7 @@
 
 import ipp from '../ipp.js'
 
-var data = new Buffer(
+var data = Buffer.from(
 		'0200' +	//version 2.0
 		'000B' +	//Get-Printer-Attributes
 		'00000001'+	//reqid
@@ -27,7 +27,7 @@ console.log(JSON.stringify(result,null,2));
 //}
 //return;
 
-var data = new Buffer(
+var data = Buffer.from(
 	'0200' +//version
 	'0000' +//status
 	'00000001' +//reqid

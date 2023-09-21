@@ -3,8 +3,7 @@ import  PDFDocument from 'pdfkit'
 import concat from 'concat-stream'
 import { PRINTER_URL } from './config';
 
-var doc = new PDFDocument({margin:0});
-doc.text(".", 0, 0);
+var doc = new PDFDocument({margin:5});
 
 
 doc.pipe(concat(function (data:any) {
@@ -27,4 +26,7 @@ doc.pipe(concat(function (data:any) {
 		console.log(res);
 	});
 }));
+
+doc.text("Hello World", 20,20);
+
 doc.end();
