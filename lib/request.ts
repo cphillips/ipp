@@ -3,6 +3,7 @@ import http from 'http'
 import https from 'https'
 import url from 'url'
 import parse from './parser'
+import axios from 'axios'
 
 interface Options {
 	port?: number
@@ -14,9 +15,9 @@ function request2(url: string, buffer: any, cb: any) {
 
 	fetch(url, {
 		method: 'POST',
-		body: Buffer.from(buffer),
+		body: buffer.buffer,
 		headers: {
-			'Content-Type': 'application/ipp'
+			'Content-Type': 'application/ipp',
 		}
 	}).then(res => {
 		console.log('STATUS', res.status)
@@ -32,7 +33,20 @@ function request2(url: string, buffer: any, cb: any) {
 	})
 
 }
-function request (opts: any, buffer: any, cb: any) {
+
+function request3(url: string, buffer: any, cb: any) {
+	axios
+		.post(url, buffer, {
+			responseType: 'arraybuffer',
+			headers: { 'Content-Type': 'application/ipp' }
+		})
+		.then((response:any) => {
+			 cb(null, parse(Buffer.from(response.data)))
+		});
+
+}
+
+function request(opts: any, buffer: any, cb: any) {
 	var streamed = typeof buffer === "function";
 	//All IPP requires are POSTs- so we must have some data.
 	//  10 is just a number I picked- this probably should have something more meaningful
@@ -93,7 +107,7 @@ function readResponse(res: any, cb: any) {
 	});
 }
 
-export default request2
+export default request3
 
 
 class IppResponseError extends Error {
