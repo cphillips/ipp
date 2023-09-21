@@ -1,8 +1,9 @@
 
-var xref = require('./ipputil').xref;
-var enums = {
+import { xref } from './ipputil'
+
+var enums: Record<string, Record<string, any>> = {
   "document-state": xref([                                            // ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippdocobject10-20031031-5100.5.pdf
-    ,,,                                                               // 0x00-0x02
+    , , ,                                                               // 0x00-0x02
     "pending",                                                        // 0x03
     ,                                                                 // 0x04
     "processing",                                                     // 0x05
@@ -11,8 +12,8 @@ var enums = {
     "aborted",                                                        // 0x08
     "completed"                                                       // 0x09
   ]),
-	"finishings": xref([
-	  ,,,                                                               // 0x00 - 0x02
+  "finishings": xref([
+    , , ,                                                               // 0x00 - 0x02
     "none",                                                           // 0x03 http://tools.ietf.org/html/rfc2911#section-4.2.6
     "staple",                                                         // 0x04 http://tools.ietf.org/html/rfc2911#section-4.2.6
     "punch",                                                          // 0x05 http://tools.ietf.org/html/rfc2911#section-4.2.6
@@ -25,7 +26,7 @@ var enums = {
     "bale",                                                           // 0x0C ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
     "booklet-maker",                                                  // 0x0D ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
     "jog-offset",                                                     // 0x0E ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
-    ,,,,,                                                             // 0x0F - 0x13 reserved for future generic finishing enum values.
+    , , , , ,                                                             // 0x0F - 0x13 reserved for future generic finishing enum values.
     "staple-top-left",                                                // 0x14 http://tools.ietf.org/html/rfc2911#section-4.2.6
     "staple-bottom-left",                                             // 0x15 http://tools.ietf.org/html/rfc2911#section-4.2.6
     "staple-top-right",                                               // 0x16 http://tools.ietf.org/html/rfc2911#section-4.2.6
@@ -38,12 +39,12 @@ var enums = {
     "staple-dual-top",                                                // 0x1D http://tools.ietf.org/html/rfc2911#section-4.2.6
     "staple-dual-right",                                              // 0x1E http://tools.ietf.org/html/rfc2911#section-4.2.6
     "staple-dual-bottom",                                             // 0x1F http://tools.ietf.org/html/rfc2911#section-4.2.6
-    ,,,,,,,,,,,,,,,,,,                                                // 0x20 - 0x31 reserved for future specific stapling and stitching enum values.
+    , , , , , , , , , , , , , , , , , ,                                                // 0x20 - 0x31 reserved for future specific stapling and stitching enum values.
     "bind-left",                                                      // 0x32 ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
     "bind-top",                                                       // 0x33 ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
     "bind-right",                                                     // 0x34 ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
     "bind-bottom",                                                    // 0x35 ftp://ftp.pwg.org/pub/pwg/ipp/new_VAL/pwg5100.1.pdf
-    ,,,,,,                                                            // 0x36 - 0x3B
+    , , , , , ,                                                            // 0x36 - 0x3B
     "trim-after-pages",                                               // 0x3C ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf (IPP Everywhere)
     "trim-after-documents",                                           // 0x3D ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf (IPP Everywhere)
     "trim-after-copies",                                              // 0x3E ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf (IPP Everywhere)
@@ -121,7 +122,7 @@ var enums = {
     'uncollated-documents'                                            // 0x05
   ]),
   "job-state": xref([                                                 // http://tools.ietf.org/html/rfc2911#section-4.3.7
-    ,,,                                                               // 0x00-0x02
+    , , ,                                                               // 0x00-0x02
     "pending",                                                        // 0x03
     "pending-held",                                                   // 0x04
     "processing",                                                     // 0x05
@@ -131,7 +132,7 @@ var enums = {
     "completed"                                                       // 0x09
   ]),
   "orientation-requested": xref([                                     // http://tools.ietf.org/html/rfc2911#section-4.2.10
-    ,,,                                                               // 0x00-0x02
+    , , ,                                                               // 0x00-0x02
     "portrait",                                                       // 0x03
     "landscape",                                                      // 0x04
     "reverse-landscape",                                              // 0x05
@@ -139,13 +140,13 @@ var enums = {
     "none"                                                            // 0x07 ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf
   ]),
   "print-quality": xref([                                             // http://tools.ietf.org/html/rfc2911#section-4.2.13
-    ,,,                                                               // 0x00-0x02
+    , , ,                                                               // 0x00-0x02
     "draft",                                                          // 0x03
     "normal",                                                         // 0x04
     "high"                                                            // 0x05
   ]),
   "printer-state": xref([                                             // http://tools.ietf.org/html/rfc2911#section-4.4.11
-    ,,,                                                               // 0x00-0x02
+    , , ,                                                               // 0x00-0x02
     "idle",                                                           // 0x03
     "processing",                                                     // 0x04
     "stopped"                                                         // 0x05
@@ -162,4 +163,4 @@ enums["print-quality-supported"] = enums["print-quality"];//1setOf
 
 
 
-module.exports = enums;
+export default enums;

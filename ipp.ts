@@ -1,24 +1,35 @@
 
-var util = require('./lib/ipputil');
+import { xref } from './lib/ipputil'
+import parse from './lib/parser'
+import serialize from './lib/serializer'
+import request from './lib/request'
+import Printer from './lib/printer'
+import versions from './lib/versions'
+import attributes from './lib/attributes'
+import keywords from './lib/keywords'
+import enums from './lib/enums'
+import tags from './lib/tags'
+import statusCodes from './lib/status-codes'
 
-module.exports = {
-	parse: require('./lib/parser'),
-	serialize: require('./lib/serializer'),
-	request: require('./lib/request'),
-	Printer: require('./lib/printer'),
-	versions: require('./lib/versions'),
-	attributes: require('./lib/attributes'),
-	keywords: require('./lib/keywords'),
-	enums: require('./lib/enums'),
-	tags: require('./lib/tags'),
-	statusCodes: require('./lib/status-codes')
-};
-module.exports.operations = module.exports.enums['operations-supported'];
-module.exports.attribute = {
+export default {
+	parse: parse,
+	serialize: serialize,
+	request: request,
+	Printer: Printer,
+	versions: versions,
+	attributes: attributes,
+	keywords: keywords,
+	enums: enums,
+	tags: tags,
+	statusCodes: statusCodes
+}
+
+export const operations = enums['operations-supported'];
+export const attribute = {
 	//http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-7
-	groups: util.xref(module.exports.tags.lookup.slice(0x00, 0x0F)),
+	groups: xref(tags.lookup.slice(0x00, 0x0F)),
 	//http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-8
-	values: util.xref(module.exports.tags.lookup.slice(0x10, 0x1F)),
+	values: xref(tags.lookup.slice(0x10, 0x1F)),
 	//http://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-9
-	syntaxes: util.xref(module.exports.tags.lookup.slice(0x20))
+	syntaxes: xref(tags.lookup.slice(0x20))
 }

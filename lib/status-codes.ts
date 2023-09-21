@@ -1,7 +1,8 @@
 
-var xref = require('./ipputil').xref;
+import { xref } from './ipputil'
 
-var status = [];
+const status:Array<string> = [];
+
 /* Success 0x0000 - 0x00FF */
 status[0x0000] = 'successful-ok';                                      //http://tools.ietf.org/html/rfc2911#section-13.1.2.1
 status[0x0001] = 'successful-ok-ignored-or-substituted-attributes';    //http://tools.ietf.org/html/rfc2911#section-13.1.2.2 & http://tools.ietf.org/html/rfc3995#section-13.5
@@ -55,4 +56,4 @@ status[0x050A] = 'server-error-printer-is-deactivated';                //http://
 status[0x050B] = 'server-error-too-many-jobs';                         //ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf
 status[0x050C] = 'server-error-too-many-documents';                    //ftp://ftp.pwg.org/pub/pwg/candidates/cs-ippjobext10-20031031-5100.7.pdf
 
-module.exports = xref(status);
+export default xref(status);

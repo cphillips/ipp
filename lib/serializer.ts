@@ -1,3 +1,4 @@
+import { LookupArray } from "./arrays";
 
 var operations = require('./enums')['operations-supported'],
 	tags = require('./tags'),
@@ -12,44 +13,44 @@ function random(){
 	return +Math.random().toString().substr(-8);
 }
 
-module.exports = function serializer(msg){
+export default function serialize(msg:any){
 	var buf = new Buffer(10240);
 	var position = 0;
-	function write1(val){
+	function write1(val:number){
 		checkBufferSize(1);
 		buf.writeUInt8(val, position);
 		position+=1;
 	}
-	function write2(val){
+	function write2(val:number){
 		checkBufferSize(2);
 		buf.writeUInt16BE(val, position);
 		position+=2;
 	}
-	function write4(val){
+	function write4(val:number){
 		checkBufferSize(4);
 		buf.writeUInt32BE(val, position);
 		position+=4;
 	}
-	function writeStr(str, enc){
+	function writeStr(str:string, enc?:BufferEncoding){
 		var length = Buffer.byteLength(str);
 		checkBufferSize(length);
-		buf.write(str, position, length, enc || "utf8");
+		buf.write(str, position, length, enc ?? "utf8");
 		position+=length;
 	}
-	function write(str, enc){
+	function write(str:string, enc?:BufferEncoding){
 		var length = Buffer.byteLength(str);
 		write2(length);
 		checkBufferSize(length);
-		buf.write(str, position, length, enc || "utf8");
+		buf.write(str, position, length, enc ?? "utf8");
 		position+=length;
 	}
-	function checkBufferSize(length){
+	function checkBufferSize(length:number){
 		if (position + length > buf.length){
 			buf = Buffer.concat([buf], 2 * buf.length);
 		}
 	}
-	var special = {'attributes-charset':1, 'attributes-natural-language':2};
-	var groupmap = {
+	var special:Record<string,number> = {'attributes-charset':1, 'attributes-natural-language':2};
+	var groupmap:Record<string,string|string[]> = {
 		"job-attributes-tag":	               ['Job Template', 'Job Description'],
 		'operation-attributes-tag':          'Operation',
 		'printer-attributes-tag':            'Printer Description',
@@ -59,7 +60,7 @@ module.exports = function serializer(msg){
 		"resource-attributes-tag":           '',//??
 		"document-attributes-tag":           'Document Description'
 	};
-	function writeGroup(tag){
+	function writeGroup(tag:string){
 		var attrs = msg[tag];
 		if(!attrs) return;
 		var keys = Object.keys(attrs);
@@ -72,13 +73,14 @@ module.exports = function serializer(msg){
 			attr(groupname, name, attrs);
 		});
 	}
-	function attr(group, name, obj){
+	function attr(group:any, name:string, obj:any){
 		var groupName = Array.isArray(group)
 			? group.find( function (grp) { return attributes[grp][name] })
 			: group;
 		if(!groupName) throw "Unknown attribute: " + name;
 
-		var syntax = attributes[groupName][name];
+		//cphillips: dangerous assumming
+		var syntax = attributes[groupName][name] as LookupArray<any>;
 
 		if(!syntax) throw "Unknown attribute: " + name;
 
@@ -86,7 +88,7 @@ module.exports = function serializer(msg){
 		if(!Array.isArray(value))
 			value = [value];
 
-		value.forEach(function(value, i){
+		value.forEach(function(value:number, i:number){
 			//we need to re-evaluate the alternates every time
 			var syntax2 = Array.isArray(syntax)? resolveAlternates(syntax, name, value) : syntax;
 			var tag = getTag(syntax2, name, value);
@@ -104,7 +106,7 @@ module.exports = function serializer(msg){
 			writeValue(tag, value, syntax2.members);
 		});
 	}
-	function getTag(syntax, name, value){
+	function getTag(syntax:any, name:string, value:any){
 		var tag = syntax.tag;
 		if(!tag){
 			var hasRS = !!~value.indexOf(RS);
@@ -112,7 +114,8 @@ module.exports = function serializer(msg){
 		}
 		return tag;
 	}
-	function resolveAlternates(array, name, value){
+
+	function resolveAlternates(array:LookupArray<any>, name:string, value:any){
 		switch(array.alts){
 			case 'keyword,name':
 			case 'keyword,name,novalue':
@@ -121,9 +124,9 @@ module.exports = function serializer(msg){
 			case 'integer,rangeOfInteger':
 				return Array.isArray(value)? array.lookup.rangeOfInteger : array.lookup.integer;
 			case 'dateTime,novalue':
-				return !IsNaN(date.parse(value))? array.lookup.dateTime : array.lookup['novalue'];
+				return !isNaN(Date.parse(value))? array.lookup.dateTime : array.lookup['novalue'];
 			case 'integer,novalue':
-				return !IsNaN(value)? array.lookup.integer : array.lookup['novalue'];
+				return !isNaN(value)? array.lookup.integer : array.lookup['novalue'];
 			case 'name,novalue':
 				return value!==null? array.lookup.name : array.lookup['novalue'];
 			case 'novalue,uri':
@@ -138,7 +141,7 @@ module.exports = function serializer(msg){
 				throw "Unknown atlernates";
 		}
 	}
-	function writeValue(tag, value, submembers){
+	function writeValue(tag:any, value:any, submembers?:any){
 		switch(tag){
 			case tags.enum:
 				write2(0x0004);
@@ -181,10 +184,11 @@ module.exports = function serializer(msg){
 
 			case tags.textWithLanguage:
 			case tags.nameWithLanguage:
-				write2(parts[0].length);
-				write2(parts[0]);
-				write2(parts[1].length);
-				write2(parts[1]);
+				//cphillips: parts does not exist
+				// write2(parts[0].length);
+				// write2(parts[0]);
+				// write2(parts[1].length);
+				// write2(parts[1]);
 				return;
 
 			case tags.nameWithoutLanguage:
@@ -214,10 +218,11 @@ module.exports = function serializer(msg){
 				console.error(tag, "not handled");
 		}
 	}
-	function writeCollection(value, members){
+	function writeCollection(value:any, members:any){
 		Object.keys(value).forEach(function(key){
 			var subvalue = value[key];
-			var subsyntax = members[key];
+			//cphil: dangerously assuming 
+			var subsyntax = members[key] as LookupArray<any>;
 
 			if(Array.isArray(subsyntax))
 				subsyntax = resolveAlternates(subsyntax, key, subvalue);
@@ -262,7 +267,7 @@ module.exports = function serializer(msg){
 	msg.data.copy(buf2, position, 0);
 	return buf2;
 };
-function timezone(d) {
+function timezone(d:Date):[string,number,number] {
 	var z = d.getTimezoneOffset();
 	return [
 		z > 0 ? "-" : "+",

@@ -1,39 +1,41 @@
 
-var attributes = require('./attributes');
+import { ArrayWithType } from './arrays';
+import attributes from './attributes'
 
 //the only possible values for the keyword
-function keyword(arr){
+
+function keyword(arr: ArrayWithType<any>) {
   arr = arr.slice(0);
   arr.type = "keyword";
   return arr;
 }
 //some values for the keyword- but can include other 'name's
-function keyword_name(arr){
+function keyword_name(arr: ArrayWithType<any>) {
   arr = arr.slice(0);
   arr.type = "keyword | name";
   return arr;
 }
 //a keyword, name, or empty value
-function keyword_name_novalue(arr){
+function keyword_name_novalue(arr: ArrayWithType<any>) {
   arr = arr.slice(0);
   arr.type = "keyword | name | no-value";
   return arr;
 }
 //a keyword that groups another keyword's values together
-function setof_keyword(arr){
+function setof_keyword(arr: ArrayWithType<any>) {
   arr = arr.slice(0);
   arr.type = "1setOf keyword";
   return arr;
 }
 //a keyword that groups [another keyword's values] or [names] together
-function setof_keyword_name(arr){
+function setof_keyword_name(arr: ArrayWithType<any>) {
   arr = arr.slice(0);
   arr.type = "1setOf keyword | name";
   return arr;
 }
 
 //media is different from the others because it has sub-groups
-var media = {
+const media = {
   "size name": [
     "a",
     "arch-a",
@@ -551,7 +553,7 @@ var Job_Template_and_Operation_attribute_names = Job_Template_attribute_names.co
 var Printer_attribute_names = Object.keys(attributes["Job Template"]).concat(["none"]);
 var media_name_or_size = media["media name"].concat(media["size name"]);
 
-var keywords = {};
+var keywords: Record<string, ArrayWithType<any>> = {};
 keywords["compression"] = keyword([
   "compress",
   "deflate",
@@ -694,8 +696,8 @@ keywords["job-cover-front-supported"] = setof_keyword(
   keywords["cover-front-supported"]
 );
 keywords["job-creation-attributes-supported"] = setof_keyword(
-//  Any Job Template attribute
-//  Any job creation Operation attribute keyword name
+  //  Any Job Template attribute
+  //  Any job creation Operation attribute keyword name
   Job_Template_and_Operation_attribute_names
 );
 keywords["job-error-action"] = keyword([
@@ -738,7 +740,7 @@ keywords["job-hold-until-supported"] = setof_keyword_name(
   keywords["job-hold-until"]
 );
 keywords["job-mandatory-attributes"] = setof_keyword(
-//  Any Job Template attribute
+  //  Any Job Template attribute
   Job_Template_attribute_names
 );
 keywords["job-password-encryption"] = keyword_name([
@@ -756,7 +758,7 @@ keywords["job-save-disposition-supported"] = setof_keyword([
   "save-info"
 ]);
 keywords["job-settable-attributes-supported"] = setof_keyword(
-//  Any Job Template attribute
+  //  Any Job Template attribute
   Job_Template_attribute_names
 );
 keywords["job-sheets"] = keyword_name([
@@ -838,12 +840,11 @@ keywords["job-state-reasons"] = setof_keyword([
   "warnings-detected"
 ]);
 keywords["media"] = keyword_name(
-  [].concat(media["size name"],
-    media["media name"],
-    media["media type"],
-    media["input tray"],
-    media["envelope name"]
-  )
+  [...media["size name"],
+  ...media["media name"],
+  ...media["media type"],
+  ...media["input tray"],
+  ...media["envelope name"]]
 );
 keywords["media-back-coating"] = keyword_name([
   "glossy",
@@ -907,11 +908,11 @@ keywords["media-input-tray-check-supported"] = setof_keyword_name(
   media["input tray"]
 );
 keywords["media-key"] = keyword_name(
-//  Any "media" media or size keyword value
+  //  Any "media" media or size keyword value
   media_name_or_size
 );
 keywords["media-key-supported"] = setof_keyword_name([
-//  Any "media" media or size keyword value
+  //  Any "media" media or size keyword value
   media_name_or_size
 ]);
 keywords["media-pre-printed"] = keyword_name([
@@ -923,7 +924,7 @@ keywords["media-pre-printed-supported"] = keyword_name(
   keywords["media-pre-printed"]
 );
 keywords["media-ready"] = setof_keyword_name([
-//  Any "media" media or size keyword value
+  //  Any "media" media or size keyword value
   media_name_or_size
 ]);
 keywords["media-recycled"] = keyword_name([
@@ -1278,18 +1279,18 @@ keywords["print-rendering-intent-supported"] = setof_keyword(
   keywords["print-rendering-intent"]
 );
 keywords["printer-get-attributes-supported"] = setof_keyword(
-//  Any Job Template attribute
-//  Any job creation Operation attribute keyword name
+  //  Any Job Template attribute
+  //  Any job creation Operation attribute keyword name
   Job_Template_and_Operation_attribute_names
 );
 keywords["printer-mandatory-job-attributes"] = setof_keyword(
-//	Any Job Template attribute
-//	Any Operation attribute at the job level
+  //	Any Job Template attribute
+  //	Any Operation attribute at the job level
   //this probably isn't quite right...
   Job_Template_and_Operation_attribute_names
 );
 keywords["printer-settable-attributes-supported"] = setof_keyword(
-//  Any read-write Printer attribute keyword name
+  //  Any read-write Printer attribute keyword name
   Printer_attribute_names
 );
 keywords["printer-state-reasons"] = setof_keyword([
@@ -2232,4 +2233,4 @@ keywords["y-image-position-supported"] = setof_keyword(
   keywords["y-image-position"]
 );
 
-module.exports = keywords;
+export default keywords;

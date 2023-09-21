@@ -1,33 +1,33 @@
 
 
-var tag = require('./tags');
+import tag from './tags'
 
 
-function msg(host, operation, id){
+function msg(host: string, operation: number, id: number) {
 	var buf = new Buffer(1024);
 	var position = 0;
-	function write1(val){
+	function write1(val: number) {
 		buf.writeUInt8(val, position);
-		position+=1;
+		position += 1;
 	}
-	function write2(val){
+	function write2(val: number) {
 		buf.writeUInt16BE(val, position);
-		position+=2;
+		position += 2;
 	}
-	function write4(val){
+	function write4(val: number) {
 		buf.writeUInt32BE(val, position);
-		position+=4;
+		position += 4;
 	}
-	function write(str){
+	function write(str: string) {
 		var length = Buffer.byteLength(str);
 		write2(length);
 		buf.write(str, position, length);
-		position+=length;
+		position += length;
 	}
-	function attr(tag, name, values){
+	function attr(tag: number, name: string, values: string[]) {
 		write1(tag);
 		write(name);
-		for(var i=0;i<values.length;i++){
+		for (var i = 0; i < values.length; i++) {
 			write(values[i]);
 		}
 	}
@@ -56,10 +56,10 @@ function msg(host, operation, id){
 	write1(tag['operation-attributes-tag']);//0x01
 	attr(tag.charset, 'attributes-charset', ['utf-8']);
 	attr(tag.naturalLanguage, 'attributes-natural-language', ['en-us']);
-	attr(tag.uri, 'printer-uri', ['ipp://'+host]);
+	attr(tag.uri, 'printer-uri', ['ipp://' + host]);
 
 	write1(0x03);//end
 	return buf.slice(0, position);
 }
 
-module.exports = msg;
+export default msg;

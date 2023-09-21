@@ -1,88 +1,94 @@
 
 
-var enums = require('./enums'),
-	operations = enums['operations-supported'],
-	statusCodes = require('./status-codes'),
-	tags = require('./tags'),
-	RS = '\u001e'
-;
+import enums from './enums'
+import statusCodes from './status-codes'
+import tags from './tags'
+const RS = '\u001e'
 
-module.exports = function(buf) {
-	var obj = {};
+const operations = enums['operations-supported']
+
+//cphil: What kind of buffer is this?
+export default function (buf: any) {
+	var obj: Record<string, any> = {};
 	var position = 0;
 	var encoding = 'utf8';
-	function read1(){
+	function read1(): number {
 		return buf[position++];
 	}
-	function read2(){
+	function read2(): number {
 		var val = buf.readInt16BE(position, true);
-		position+=2;
+		position += 2;
 		return val;
 	}
-	function read4(){
+	function read4(): number {
 		var val = buf.readInt32BE(position, true);
-		position+=4;
+		position += 4;
 		return val;
 	}
-	function read(length, enc){
-		if(length==0) return '';
-		return buf.toString(enc||encoding, position, position+=length);
+	function read(length: number, enc?: string): string {
+		if (length == 0) return '';
+		return buf.toString(enc ?? encoding, position, position += length);
 	}
-	function readGroups(){
+	function readGroups() {
 		var group;
-		while(position < buf.length && (group = read1()) !== 0x03){//end-of-attributes-tag
+		while (position < buf.length && (group = read1()) !== 0x03) {//end-of-attributes-tag
 			readGroup(group);
 		}
 	}
-	function readGroup(group){
+	function readGroup(group: string | number) {
 		var name = tags.lookup[group];
-		group={};
-		if(obj[name]){
-			if(!Array.isArray(obj[name]))
+		const _group = {};
+		if (obj[name]) {
+			if (!Array.isArray(obj[name]))
 				obj[name] = [obj[name]];
-			obj[name].push(group);
+			obj[name].push(_group);
 		}
-		else obj[name] = group;
+		else obj[name] = _group;
 
-		while(buf[position] >= 0x0F) {// delimiters are between 0x00 to 0x0F
-			readAttr(group);
+		while (buf[position] >= 0x0F) {// delimiters are between 0x00 to 0x0F
+			readAttr(_group);
 		}
 	}
-	function readAttr(group){
+	function readAttr(group: Record<string, any>) {
 		var tag = read1();
 		//TODO: find a test for this
-		if (tag === 0x7F){//tags.extension
+		if (tag === 0x7F) {//tags.extension
 			tag = read4();
 		}
 		var name = read(read2());
 		group[name] = readValues(tag, name)
 	}
-	function hasAdditionalValue(){
+	function hasAdditionalValue() {
 		var current = buf[position];
 		return current !== 0x4A //tags.memberAttrName
 			&& current !== 0x37 //tags.endCollection
 			&& current !== 0x03 //tags.end-of-attributes-tag
-			&& buf[position+1] === 0x00 && buf[position+2] === 0x00;
+			&& buf[position + 1] === 0x00 && buf[position + 2] === 0x00;
 	}
-	function readValues(type, name){
-		var value = readValue(type, name);
-		if(hasAdditionalValue()){
-			value = [value];
-			do{
+	function readValues(type:number, name?:string) {
+		let value = readValue(type, name)
+		if (hasAdditionalValue()) {
+			const values = [value];
+			do {
 				type = read1();
 				read2();//empty name
-				value.push(readValue(type, name));
+				values.push(readValue(type, name));
 			}
-			while(hasAdditionalValue())
+			while (hasAdditionalValue())
+			return values
+		} else {
+			return value;
 		}
-		return value;
 	}
-	function readValue(tag, name){
+
+	function readValue(tag: any, name?: string): any {
 		var length = read2();
 		//http://tools.ietf.org/html/rfc2910#section-3.9
 		switch (tag) {
 			case tags.enum:
 				var val = read4();
+				if(name === undefined)
+					throw new Error("enum value without name")
 				return (enums[name] && enums[name].lookup[val]) || val;
 			case tags.integer:
 				return read4();
@@ -94,19 +100,20 @@ module.exports = function(buf) {
 				return [read4(), read4()];
 
 			case tags.resolution:
-				return [read4(), read4(), read1()===0x03? 'dpi':'dpcm'];
+				return [read4(), read4(), read1() === 0x03 ? 'dpi' : 'dpcm'];
 
 			case tags.dateTime:
 				// http://tools.ietf.org/html/rfc1903 page 17
 				var date = new Date(read2(), read1(), read1(), read1(), read1(), read1(), read1());
 				//silly way to add on the timezone
-				return new Date(date.toISOString().substr(0,23).replace('T',',') +','+ String.fromCharCode(read(1)) + read(1) + ':' + read(1));
+				//cphil: looks like a bug here read() is always a string and not a number
+				return new Date(date.toISOString().substr(0, 23).replace('T', ',') + ',' + String.fromCharCode(read(1) as unknown as number) + read(1) + ':' + read(1));
 
 			case tags.textWithLanguage:
 			case tags.nameWithLanguage:
 				var lang = read(read2());
 				var subval = read(read2());
-				return lang+RS+subval;
+				return lang + RS + subval;
 
 			case tags.nameWithoutLanguage:
 			case tags.textWithoutLanguage:
@@ -133,12 +140,12 @@ module.exports = function(buf) {
 				return module.exports.handleUnknownTag(tag, name, length, read)
 		}
 	}
-	function readCollection(){
+	function readCollection() {
 		var tag;
-		var collection = {};
+		var collection:Record<string,any> = {};
 
-		while((tag = read1()) !== 0x37){//tags.endCollection
-			if(tag !== 0x4A){
+		while ((tag = read1()) !== 0x37) {//tags.endCollection
+			if (tag !== 0x4A) {
 				console.log("unexpected:", tags.lookup[tag]);
 				return;
 			}
@@ -156,10 +163,10 @@ module.exports = function(buf) {
 
 		return collection;
 	}
-	function readCollectionItemValue(name){
+	function readCollectionItemValue(name?: string) {
 		var tag = read1();
 		//TODO: find a test for this
-		if (tag === 0x7F){//tags.extension
+		if (tag === 0x7F) {//tags.extension
 			tag = read4();
 		}
 		//read valuetag name and discard it
@@ -175,22 +182,22 @@ module.exports = function(buf) {
 	//can almost detect if it is a req or a res- but sadly, six
 	//values overlap. In these cases, the parser will give both and
 	//the consumer can ignore (or delete) whichever they don't want.
-	if(bytes2and3 >= 0x02 || bytes2and3 <= 0x3D)
+	if (bytes2and3 >= 0x02 || bytes2and3 <= 0x3D)
 		obj.operation = operations.lookup[bytes2and3];
 
-	if(bytes2and3 <= 0x0007 || bytes2and3 >= 0x0400)
+	if (bytes2and3 <= 0x0007 || bytes2and3 >= 0x0400)
 		obj.statusCode = statusCodes.lookup[bytes2and3];
 	obj.id = read4();
 	readGroups();
 
-	if(position<buf.length)
+	if (position < buf.length)
 		obj.data = buf.toString(encoding, position);
 
 	return obj;
 };
-module.exports.handleUnknownTag = 	function log(tag, name, length, read) {
-	var value = length? read(length) : undefined;
-	console.log("The spec is not clear on how to handle tag " +tag+ ": " +name+ "=" +String(value)+ ". " +
+module.exports.handleUnknownTag = function log(tag: any, name: string, length: number, read: any) {
+	var value = length ? read(length) : undefined;
+	console.log("The spec is not clear on how to handle tag " + tag + ": " + name + "=" + String(value) + ". " +
 		"Please open a github issue to help find a solution!");
 	return value;
 };
