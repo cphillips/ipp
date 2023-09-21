@@ -94,6 +94,7 @@ function request(opts: any, buffer: any, cb: any) {
 	req.write(buffer);
 	req.end();
 };
+
 function readResponse(res: any, cb: any) {
 	var chunks: any[] = [], length = 0;
 	res.on('data', function (chunk: any) {

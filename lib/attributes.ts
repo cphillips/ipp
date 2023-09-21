@@ -10,7 +10,7 @@ uncomment the console.log() at the end of this file.
  */
 import { type } from 'os';
 import tags from './tags'
-import { LookupArray } from './arrays';
+import { ArrayWithLookup } from './arrays';
 
 function text(max: number) {
   if (!max) max = 1023;
@@ -77,7 +77,7 @@ function _(...vargs: any[]) {
 
   
 
-  const args = Array.prototype.slice.call(arguments) as LookupArray<any>;
+  const args = Array.prototype.slice.call(arguments) as ArrayWithLookup<any>;
   args.lookup = {};
   const deferred = createDeferred(function () {
     args.forEach(function (a, i) {

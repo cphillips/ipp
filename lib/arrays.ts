@@ -1,5 +1,5 @@
 //cphillips
-export interface LookupArray<T> extends Array<T> {
+export interface ArrayWithLookup<T> extends Array<T> {
   lookup: { [key: string]: T };
   alts: string
   members:any

@@ -1,4 +1,4 @@
-import { LookupArray } from "./arrays";
+import { ArrayWithLookup } from "./arrays";
 
 // import enum from './enums'
 // 	tags = require('./tags'),
@@ -90,7 +90,7 @@ export default function serialize(msg:any){
 		if(!groupName) throw "Unknown attribute: " + name;
 
 		//cphillips: dangerous assumming
-		var syntax = attributes[groupName][name] as LookupArray<any>;
+		var syntax = attributes[groupName][name] as ArrayWithLookup<any>;
 
 		if(!syntax) throw "Unknown attribute: " + name;
 
@@ -125,7 +125,7 @@ export default function serialize(msg:any){
 		return tag;
 	}
 
-	function resolveAlternates(array:LookupArray<any>, name:string, value:any){
+	function resolveAlternates(array:ArrayWithLookup<any>, name:string, value:any){
 		switch(array.alts){
 			case 'keyword,name':
 			case 'keyword,name,novalue':
@@ -232,7 +232,7 @@ export default function serialize(msg:any){
 		Object.keys(value).forEach(function(key){
 			var subvalue = value[key];
 			//cphil: dangerously assuming 
-			var subsyntax = members[key] as LookupArray<any>;
+			var subsyntax = members[key] as ArrayWithLookup<any>;
 
 			if(Array.isArray(subsyntax))
 				subsyntax = resolveAlternates(subsyntax, key, subvalue);
