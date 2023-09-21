@@ -27,13 +27,16 @@
 		}
 	],
 	"main": "ipp.ts",
+	"type": "module",
 	"scripts": {
 		"build": "tsc",
 		"test": "tsx tests/parser-test.ts"
 	},
 	"devDependencies": {
+		"@types/concat-stream": "^2.0.0",
 		"@types/mdns": "^0.0.34",
 		"@types/node": "^20.6.3",
+		"@types/pdfkit": "^0.12.11",
 		"concat-stream": "^2.0.0",
 		"mdns": "^2.7.2",
 		"pdfkit": "^0.13.0",

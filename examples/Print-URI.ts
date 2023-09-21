@@ -1,5 +1,6 @@
-var ipp = require('./../ipp');
-var PDFDocument = require('pdfkit');
+import ipp from './../ipp'
+import PDFDocument  from 'pdfkit';
+import { PRINTER_URL } from './config';
 
 //make a PDF document
 var doc = new PDFDocument({margin:0});
@@ -8,7 +9,7 @@ doc.text(".", 0, 0);
 //doc.text(".", 0, 0);
 
 
-var printer = ipp.Printer("http://cp02.local.:631/ipp/printer");
+var printer = new ipp.Printer(PRINTER_URL);
 var msg = {
 	"operation-attributes-tag": {
 		"requesting-user-name": "William",
@@ -17,6 +18,6 @@ var msg = {
 		"document-uri": "http://192.168.20.114:5000/check"
 	}
 };
-printer.execute("Print-URI", msg, function(err, res){
+printer.execute("Print-URI", msg, function(err:any, res:any){
 	console.log(res);
 });

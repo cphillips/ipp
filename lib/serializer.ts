@@ -1,14 +1,24 @@
 import { LookupArray } from "./arrays";
 
-var operations = require('./enums')['operations-supported'],
-	tags = require('./tags'),
-	versions = require('./versions'),
-	attributes = require('./attributes'),
-	enums = require('./enums'),
-	keywords = require('./keywords'),
-	statusCodes = require('./status-codes'),
-	RS = '\u001e'
-;
+// import enum from './enums'
+// 	tags = require('./tags'),
+// 	versions = require('./versions'),
+// 	attributes = require('./attributes'),
+// 	enums = require('./enums'),
+// 	keywords = require('./keywords'),
+// 	statusCodes = require('./status-codes'),
+
+import versions from './versions'
+import attributes from './attributes'
+import keywords from './keywords'
+import enums from './enums'
+import tags from './tags'
+import statusCodes from './status-codes'
+
+
+const	RS = '\u001e'
+const operations = enums['operations-supported']
+
 function random(){
 	return +Math.random().toString().substr(-8);
 }

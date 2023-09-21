@@ -1,0 +1,1 @@
+export const PRINTER_URL = 'http://192.168.4.62:631/ipp/printer';

@@ -1,13 +1,14 @@
-var ipp = require('./../ipp');
-var PDFDocument = require('pdfkit');
-var concat = require("concat-stream");
+import ipp from '../ipp'
+import  PDFDocument from 'pdfkit'
+import concat from 'concat-stream'
+import { PRINTER_URL } from './config';
 
 var doc = new PDFDocument({margin:0});
 doc.text(".", 0, 0);
 
 
-doc.pipe(concat(function (data) {
-	var printer = ipp.Printer("http://cp02.local.:631/ipp/printer");
+doc.pipe(concat(function (data:any) {
+	var printer = new ipp.Printer(PRINTER_URL);
 	var msg = {
 		"operation-attributes-tag": {
 			"requesting-user-name": "Bumblebee",
@@ -21,7 +22,7 @@ doc.pipe(concat(function (data) {
 		}
 		, data: data
 	};
-	printer.execute("Print-Job", msg, function(err, res){
+	printer.execute("Print-Job", msg, function(err:any, res:any){
 		console.log(err);
 		console.log(res);
 	});

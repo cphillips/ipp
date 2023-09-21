@@ -10,7 +10,7 @@ export default class Printer {
 	uri: string
 	charset: string
 	language: string
-	constructor(url: string, opts: any) {
+	constructor(url: string, opts?: any) {
 		opts = opts || {};
 		this.url = typeof url === "string" ? new URL(url) : url;
 		this.version = opts.version || '2.0';

@@ -3,10 +3,11 @@
 	Poll the printer for a limited set of attributes
 */
 
-var ipp = require('./../ipp');
+import ipp from './../ipp'
+import { PRINTER_URL } from './config';
 var id = 0x0123;//made up reqid
 
-var printer = ipp.Printer("http://cp02.local.:631/ipp/printer");
+var printer = new ipp.Printer(PRINTER_URL);
 var msg = {
 	"operation-attributes-tag": {
 		"document-format": "application/pdf",
@@ -20,7 +21,7 @@ var msg = {
 	}
 };
 function printer_info(){
-	printer.execute("Get-Printer-Attributes", msg, function(err, res){
+	printer.execute("Get-Printer-Attributes", msg, function(err:any, res:any){
 		console.log(JSON.stringify(res['printer-attributes-tag'], null, 2));
 		setTimeout(printer_info, 1);
 	});

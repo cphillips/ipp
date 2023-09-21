@@ -137,7 +137,7 @@ export default function (buf: any) {
 			case tags['no-value']:
 			default:
 				debugger;
-				return module.exports.handleUnknownTag(tag, name, length, read)
+				return handleUnknownTag(tag, name, length, read)
 		}
 	}
 	function readCollection() {
@@ -195,9 +195,12 @@ export default function (buf: any) {
 
 	return obj;
 };
-module.exports.handleUnknownTag = function log(tag: any, name: string, length: number, read: any) {
+
+function log(tag: any, name: string | undefined, length: number, read: any) {
 	var value = length ? read(length) : undefined;
 	console.log("The spec is not clear on how to handle tag " + tag + ": " + name + "=" + String(value) + ". " +
 		"Please open a github issue to help find a solution!");
 	return value;
 };
+
+export const handleUnknownTag = log

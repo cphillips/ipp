@@ -1,5 +1,6 @@
-var ipp = require('./../ipp');
-var printer = ipp.Printer("ipp://cp02.local.:631/ipp/printer");
+import ipp from './../ipp'
+import { PRINTER_URL } from './config';
+var printer = new ipp.Printer(PRINTER_URL);
 
 var msg = {
   "operation-attributes-tag": {
@@ -19,7 +20,7 @@ var msg = {
   }
 }
 
-printer.execute("Get-Jobs", msg, function(err, res){
+printer.execute("Get-Jobs", msg, function(err:any, res:any){
   if (err) return console.log(err);
   console.log(res['job-attributes-tag']);
 });
