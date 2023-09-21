@@ -7,28 +7,37 @@
 		"print",
 		"printing"
 	],
-	"homepage": "http://github.com/williamkapke/ipp",
+	"homepage": "http://github.com/cphillips/ipp",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/williamkapke/ipp.git"
+		"url": "https://github.com/cphillips/ipp.git"
 	},
 	"author": {
+		"name": "Clint Phillips",
+		"email": "clint.phillips@gmail.com"
+	},
+	"contributes": {
 		"name": "William Kapke",
 		"email": "william.kapke@gmail.com"
-	},
-	"devDependencies": {
-		"concat-stream": "^1.6.0",
-		"mdns": "^2.3.3",
-		"pdfkit": "^0.8.3"
-	},
-	"main": "ipp.js",
-	"engines": {
-		"node": "<4.0.0"
 	},
 	"licenses": [
 		{
 			"type": "MIT",
 			"url": "http://www.opensource.org/licenses/MIT"
 		}
-	]
+	],
+	"main": "ipp.ts",
+
+	"scripts": {
+		"build": "tsc",
+		"test": "tsx tests/parser-test.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^20.6.3",
+		"concat-stream": "^2.0.0",
+		"mdns": "^2.7.2",
+		"pdfkit": "^0.13.0",
+		"tsx": "^3.12.10",
+		"typescript": "^5.2.2"
+	}
 }
