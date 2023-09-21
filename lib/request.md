@@ -4,35 +4,7 @@ import https from 'https'
 import url from 'url'
 import parse from './parser'
 
-interface Options {
-	port?: number
-	protocol?: string
-	headers?: Record<string, any>
-}
-
-function request2(url: string, buffer: any, cb: any) {
-
-	fetch(url, {
-		method: 'POST',
-		body: Buffer.from(buffer),
-		headers: {
-			'Content-Type': 'application/ipp'
-		}
-	}).then(res => {
-		console.log('STATUS', res.status)
-		if (res.ok) {
-			res.arrayBuffer().then(buffer => {
-				const data = parse(Buffer.from(buffer))
-				delete data.operation;
-				cb(null, data)
-			})
-		} else {
-			cb(new IppResponseError(res.status))
-		}
-	})
-
-}
-function request (opts: any, buffer: any, cb: any) {
+export default function (opts: any, buffer: any, cb: any) {
 	var streamed = typeof buffer === "function";
 	//All IPP requires are POSTs- so we must have some data.
 	//  10 is just a number I picked- this probably should have something more meaningful
@@ -92,9 +64,6 @@ function readResponse(res: any, cb: any) {
 		cb(null, response);
 	});
 }
-
-export default request2
-
 
 class IppResponseError extends Error {
 	name: string
