@@ -15,6 +15,7 @@ function request2(url: string, buffer: any, cb: any) {
 
 	fetch(url, {
 		method: 'POST',
+		mode: 'no-cors',
 		body: buffer.buffer,
 		headers: {
 			'Content-Type': 'application/ipp',
@@ -40,8 +41,8 @@ function request3(url: string, buffer: any, cb: any) {
 			responseType: 'arraybuffer',
 			headers: { 'Content-Type': 'application/ipp' }
 		})
-		.then((response:any) => {
-			 cb(null, parse(Buffer.from(response.data)))
+		.then((response: any) => {
+			cb(null, parse(Buffer.from(response.data)))
 		});
 
 }
@@ -108,7 +109,7 @@ function readResponse(res: any, cb: any) {
 	});
 }
 
-export default request3
+export default request2
 
 
 class IppResponseError extends Error {

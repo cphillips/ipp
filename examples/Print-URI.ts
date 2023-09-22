@@ -15,7 +15,7 @@ var msg = {
 		"requesting-user-name": "William",
 		"job-name": "My Test Job",
 		"document-format": "application/pdf",
-		"document-uri": "http://192.168.20.114:5000/check"
+		"document-uri": "https://api.shipengine.com/v1/downloads/10/XNGDhq7uZ0CAEt5LOnCxIg/label-7764944.pdf"
 	}
 };
 printer.execute("Print-URI", msg, function(err:any, res:any){
